@@ -69,12 +69,10 @@ app.delete("/users", async (req, res) => {
 });
 
 // --- 5. THE "CATCH-ALL" ROUTE ---
-// This must be the VERY LAST GET request in your code.
 // It ensures that if the user hits the home page, it sends the index.html
-app.get('*', (req, res) => {
+app.get('(.*)', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
-
 // --- 6. SERVER START ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
