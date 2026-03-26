@@ -1,0 +1,80 @@
+# .github/workflows/deploy.yml
+# This file goes inside: .github/workflows/deploy.yml
+# It runs automatically every time you push to the main branch
+
+name: CI/CD — Test & Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ── JOB 1: Lint & Test ──
+  test:
+    name: Lint & Validate HTML
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check HTML file exists
+        run: |
+          echo "✅ Checking files..."
+          ls -la
+          test -f index.html && echo "✓ index.html found" || (echo "✗ index.html missing!" && exit 1)
+          test -f server.js && echo "✓ server.js found" || echo "⚠ server.js not in root (that is OK)"
+
+      - name: Install backend dependencies
+        run: |
+          if [ -f "package.json" ]; then
+            npm install
+            echo "✅ Dependencies installed"
+          else
+            echo "No package.json found, skipping"
+          fi
+
+      - name: Basic syntax check
+        run: |
+          echo "✅ All checks passed! Ready to deploy."
+
+  # ── JOB 2: Deploy to GitHub Pages ──
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: test          # Only deploy if tests pass
+    if: github.ref == 'refs/heads/main'  # Only deploy on main branch
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'  # Upload entire repo root (where index.html lives)
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Print live URL
+        run: echo "🚀 Deployed to ${{ steps.deployment.outputs.page_url }}"

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daniel Singh - Student Database System | BCA Project</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <h2>Daniel Singh</h2>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#database">Database</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Daniel Singh</h1>
+            <p>1st Year BCA Student | Kristu Jayanti College<br>Student Database Management System</p>
+            <a href="#database" class="btn">Try Database</a>
+        </div>
+    </section>
+
+    <!-- TECHNICAL SKILLS SECTION -->
+    <section id="skills" class="skills-section">
+        <h2>Technical Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="skill-icon">☕</div>
+                <h3>Java (OOP)</h3>
+                <p>OOP concepts & basic applications</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">📱</div>
+                <h3>HTML/CSS</h3>
+                <p>Responsive design, modern layouts</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">🐍</div>
+                <h3>Python</h3>
+                <p>Data analysis, ML models</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">⚡</div>
+                <h3>C++</h3>
+                <p>Algorithms & data structures</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION -->
+    <section id="projects" class="about">
+        <h2>Featured Projects</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="card-icon">🔢</div>
+                <h3>Matrix Operation Calculator</h3>
+                <p>Advanced calculator for matrix addition, multiplication, determinant, inverse and eigenvalue calculations.</p>
+                <span class="tech-tag">Python</span>
+            </div>
+            <div class="project-card">
+                <div class="card-icon">🤖</div>
+                <h3>Salary Prediction Model</h3>
+                <p>ML model using Linear Regression trained on 95% accuracy with comprehensive feature engineering.</p>
+                <span class="tech-tag">Python/ML</span>
+            </div>
+            <div class="project-card">
+                <div class="card-icon">💻</div>
+                <h3>Student Database System</h3>
+                <p>This portfolio website with LocalStorage, CRUD operations, responsive design and smooth animations.</p>
+                <span class="tech-tag">HTML/CSS/JS</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="database" class="database-section">
+        <h2>Student Database System</h2>
+        <p>Total Students: <span id="count">0</span></p>
+        
+        <form id="studentForm" class="form-container">
+            <h3>Add New Student</h3>
+            <input type="text" id="name" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="phone" placeholder="Phone" required>
+            <input type="text" id="course" placeholder="Course (BCA/B.Com)" required>
+            <input type="number" id="marks" placeholder="Marks (0-100)" max="100" min="0" required>
+            <button type="submit" class="btn">Add Student</button>
+        </form>
+
+        <div id="studentsList" class="students-container">
+            <p>No students added yet. Try adding some!</p>
+        </div>
+        <button id="clearAll" class="btn btn-danger">Clear All Data</button>
+    </section>
+
+    <section id="contact" class="contact">
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:25bcae20@kristujayanti.com">25bcae20@kristujayanti.com</a><br>Phone: +91-677XXXXXXX</p>
+    </section>
+
+    <footer>
+        <p>© 2026 Daniel Singh | BCA 1st Year | Kristu Jayanti College | Database Project</p>
+    </footer>
+
+<script src="script.js"></script>
+<script>
+document.getElementById("studentForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const studentData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        course: document.getElementById("course").value,
+        marks: document.getElementById("marks").value
+    };
+
+    try {
+        const response = await fetch("http://localhost:3000/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(studentData)
+        });
+
+        const data = await response.json();
+        alert(data.message);
+
+    } catch (error) {
+        alert("Server error ❌");
+        console.error(error);
+    }
+});
+</script>
+</body>
+</html>
