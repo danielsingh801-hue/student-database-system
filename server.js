@@ -70,7 +70,7 @@ app.delete("/users", async (req, res) => {
 
 // --- 5. THE "CATCH-ALL" ROUTE ---
 // This version works with the newest Express 5.0 syntax
-app.get('*', (req, res) => {
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
