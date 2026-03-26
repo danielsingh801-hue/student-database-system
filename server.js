@@ -68,12 +68,14 @@ app.delete("/users", async (req, res) => {
   }
 });
 
-// This is the clean, updated way to handle the frontend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+// --- 5. THE "CATCH-ALL" ROUTE ---
+// This version works with the newest Express 5.0 syntax
+app.get('/:splat*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
-// The very last line of your file
-app.listen(PORT, () => {
-    console.log(`Server is live on port ${PORT}`);
+// --- 6. SERVER START ---
+const PORT = process.env.PORT || 10000; 
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is live on port ${PORT}`);
 });
