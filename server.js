@@ -68,13 +68,12 @@ app.delete("/users", async (req, res) => {
   }
 });
 
-// --- 5. THE "CATCH-ALL" ROUTE ---
-// It ensures that if the user hits the home page, it sends the index.html
-app.get('(.*)', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+// This is the clean, updated way to handle the frontend
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
-// --- 6. SERVER START ---
-const PORT = process.env.PORT || 3000;
+
+// The very last line of your file
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server is live on port ${PORT}`);
 });
