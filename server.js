@@ -1,31 +1,31 @@
 require('dotenv').config();
 const dns = require('dns');
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+dns.setServers(['8.8.8.8', '8.8.4.4']); // Essential for MongoDB Atlas connection issues
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const path = require("path"); // Added this to handle folder paths
+const path = require("path");
 
 const app = express();
 
-// middleware
+// --- MIDDLEWARE ---
 app.use(cors());
 app.use(express.json());
 
-// 1. SERVE FRONTEND FILES
-// This tells the server to look inside the "frontend" folder for CSS/JS
+// --- 1. SERVE FRONTEND FILES ---
+// This looks inside the "frontend" folder for index.html, CSS, and JS
 app.use(express.static(path.join(__dirname, 'frontend')));
 
-// MongoDB Connection
+// --- 2. MONGODB CONNECTION ---
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log("MongoDB Connected Successfully");
   })
   .catch((err) => {
-    console.error("MongoDB Error:", err);
+    console.error("MongoDB Connection Error:", err);
   });
 
-// schema
+// --- 3. DATABASE SCHEMA ---
 const studentSchema = new mongoose.Schema({
   name: String,
   email: String,
@@ -35,11 +35,7 @@ const studentSchema = new mongoose.Schema({
 });
 const Student = mongoose.model("Student", studentSchema);
 
-// 2. MAIN ROUTE (SHOW YOUR WEBSITE)
-// Instead of just saying "Server is running", this sends your actual index.html
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
-});
+// --- 4. API ROUTES ---
 
 // GET all students
 app.get("/users", async (req, res) => {
@@ -72,13 +68,15 @@ app.delete("/users", async (req, res) => {
   }
 });
 
-// server start
+// --- 5. THE "CATCH-ALL" ROUTE ---
+// This must be the VERY LAST GET request in your code.
+// It ensures that if the user hits the home page, it sends the index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
+});
+
+// --- 6. SERVER START ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
-
-// 404 Fallback - Keep this at the bottom
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
